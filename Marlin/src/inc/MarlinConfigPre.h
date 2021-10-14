@@ -38,14 +38,10 @@
 #include "../core/boards.h"
 #include "../../Configuration.h"
 
-#ifdef ET_EASY_CONFIG
-  #include "EasyConfigMain.h"
-#endif
-
- #ifdef CUSTOM_VERSION_FILE
-   #if __has_include(STRINGIFY(../../CUSTOM_VERSION_FILE))
-     #include STRINGIFY(../../CUSTOM_VERSION_FILE)
-   #endif
+#ifdef CUSTOM_VERSION_FILE
+  #if __has_include(STRINGIFY(../../CUSTOM_VERSION_FILE))
+    #include STRINGIFY(../../CUSTOM_VERSION_FILE)
+  #endif
 #endif
 
 #include "Version.h"

@@ -47,6 +47,7 @@
 
 void MarlinUI::tft_idle() {
   #if ENABLED(TOUCH_SCREEN)
+    if (TERN0(HAS_TOUCH_SLEEP, lcd_sleep_task())) return;
     if (draw_menu_navigation) {
       add_control(48, 206, PAGE_UP, imgPageUp, encoderTopLine > 0);
       add_control(240, 206, PAGE_DOWN, imgPageDown, encoderTopLine + LCD_HEIGHT < screen_items);
@@ -253,11 +254,11 @@ void MarlinUI::draw_status_screen() {
   // coordinates
   tft.canvas(4, 103, 312, 24);
   tft.set_background(COLOR_BACKGROUND);
-  tft.add_rectangle(0, 0, 312, 24, COLOR_AXIS_FRAME);
+  tft.add_rectangle(0, 0, 312, 24, COLOR_AXIS_HOMED);
 
-  tft.add_text( 10, 3, COLOR_AXIS_FRAME , "X");
-  tft.add_text(127, 3, COLOR_AXIS_FRAME , "Y");
-  tft.add_text(219, 3, COLOR_AXIS_FRAME , "Z");
+  tft.add_text( 10, 3, COLOR_AXIS_HOMED , "X");
+  tft.add_text(127, 3, COLOR_AXIS_HOMED , "Y");
+  tft.add_text(219, 3, COLOR_AXIS_HOMED , "Z");
 
   bool not_homed = axis_should_home(X_AXIS);
   tft_string.set(blink && not_homed ? "?" : ftostr4sign(LOGICAL_X_POSITION(current_position.x)));
@@ -330,7 +331,7 @@ void MarlinUI::draw_status_screen() {
 
   #if ENABLED(TOUCH_SCREEN)
     add_control(256, 130, menu_main, imgSettings);
-    TERN_(SDSUPPORT, add_control(0, 130, menu_media, imgSD, !printingIsActive(), COLOR_SD_ENABLED, card.isMounted() && printingIsActive() ? COLOR_BUSY : COLOR_SD_DISABLED));
+    TERN_(SDSUPPORT, add_control(0, 130, menu_media, imgSD, !printingIsActive(), COLOR_CONTROL_ENABLED, card.isMounted() && printingIsActive() ? COLOR_BUSY : COLOR_CONTROL_DISABLED));
   #endif
 }
 
@@ -397,9 +398,9 @@ void MenuEditItemBase::draw_edit_screen(PGM_P const pstr, const char * const val
 
 void TFT::draw_edit_screen_buttons() {
   #if ENABLED(TOUCH_SCREEN)
-    add_control(32, TFT_HEIGHT - 64, DECREASE, imgDecrease, true, COLOR_DECREASE);
-    add_control(224, TFT_HEIGHT - 64, INCREASE, imgIncrease, true, COLOR_INCREASE);
-    add_control(128, TFT_HEIGHT - 64, CLICK, imgConfirm, true, COLOR_TICK);
+    add_control(32, TFT_HEIGHT - 64, DECREASE, imgDecrease);
+    add_control(224, TFT_HEIGHT - 64, INCREASE, imgIncrease);
+    add_control(128, TFT_HEIGHT - 64, CLICK, imgConfirm);
   #endif
 }
 
@@ -651,7 +652,7 @@ static void moveAxis(const AxisEnum axis, const int8_t direction) {
     #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
       const int16_t babystep_increment = direction * BABYSTEP_SIZE_Z;
       const bool do_probe = DISABLED(BABYSTEP_HOTEND_Z_OFFSET) || active_extruder == 0;
-      const float bsDiff = planner.steps_to_mm[Z_AXIS] * babystep_increment,
+      const float bsDiff = planner.mm_per_step[Z_AXIS] * babystep_increment,
                   new_probe_offset = probe.offset.z + bsDiff,
                   new_offs = TERN(BABYSTEP_HOTEND_Z_OFFSET
                     , do_probe ? new_probe_offset : hotend_offset[active_extruder].z - bsDiff
@@ -769,7 +770,7 @@ static void z_minus() { moveAxis(Z_AXIS, -1); }
 
 static void disable_steppers() {
   quick_feedback();
-  queue.inject_P(PSTR("M84"));
+  queue.inject(F("M84"));
 }
 
 static void drawBtn(int x, int y, const char *label, intptr_t data, MarlinImage img, uint16_t bgColor, bool enabled = true) {
@@ -901,6 +902,4 @@ void MarlinUI::move_axis_screen() {
   TERN_(HAS_TFT_XPT2046, add_control(TFT_WIDTH - X_MARGIN - BTN_WIDTH, y, BACK, imgBack));
 }
 
-#undef BTN_WIDTH
-#undef BTN_HEIGHT
 #endif // HAS_UI_320x240

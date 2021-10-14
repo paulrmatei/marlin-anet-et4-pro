@@ -37,9 +37,9 @@
     #else
         #define ET_BOARD    ET_BOARD_NOISY
     #endif
-#endif    
+#endif
 
-#ifndef ET_LEVELLING 
+#ifndef ET_LEVELLING
     #if (ET_MODEL & ET_MODEL_ET4)
         #define ET_LEVELLING    ET_LV_FILM_STRIP
     #elif (ET_MODEL & ET_MODEL_ET4X)
@@ -120,7 +120,7 @@
 #undef USE_ZMIN_PLUG
 #undef USE_XMAX_PLUG
 #undef USE_YMAX_PLUG
-#undef USE_ZMAX_PLUG 
+#undef USE_ZMAX_PLUG
 
 #undef X_MIN_ENDSTOP_INVERTING
 #undef Y_MIN_ENDSTOP_INVERTING
@@ -169,10 +169,10 @@
     #define BABYSTEP_ZPROBE_OFFSET
     #if (ET_LEVELLING & ET_LV_BLTOUCH)
         #define BLTOUCH
-        #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN        
-        
+        #define Z_MIN_PROBE_USES_Z_MIN_ENDSTOP_PIN
+
         #undef Z_MIN_ENDSTOP_INVERTING
-        #undef Z_MIN_PROBE_ENDSTOP_INVERTING        
+        #undef Z_MIN_PROBE_ENDSTOP_INVERTING
         #define Z_MIN_ENDSTOP_INVERTING                 false
         #define Z_MIN_PROBE_ENDSTOP_INVERTING           false
     #elif (ET_LEVELLING & ET_LV_MOUNTED_PROBE)
@@ -183,13 +183,13 @@
     #endif
     #ifndef PROBING_MARGIN
         #define PROBING_MARGIN 25
-    #endif    
+    #endif
 #elif (ET_LEVELLING & ET_LV_NONE)
     #undef LCD_BED_LEVELING
     #undef G26_MESH_VALIDATION
     #undef ENABLE_LEVELING_FADE_HEIGHT
     #undef SEGMENT_LEVELED_MOVES
-    #undef LEVELED_SEGMENT_LENGTH     
+    #undef LEVELED_SEGMENT_LENGTH
     #undef AUTO_BED_LEVELING_BILINEAR
     #undef PROBING_MARGIN
     #undef NOZZLE_TO_PROBE_OFFSET
@@ -227,7 +227,7 @@
 #if (ET_MOD & ET_MOD_V6)
     #define TEMP_SENSOR_0 5
 #else 
-    #define TEMP_SENSOR_0 1
+    #define TEMP_SENSOR_0 5
 #endif
 
 //
@@ -275,7 +275,7 @@
     #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 140 }
 #else
     #define INVERT_E0_DIR false
-    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 100 }
+    #define DEFAULT_AXIS_STEPS_PER_UNIT   { 80, 80, 400, 97 }
 #endif
 
 //
